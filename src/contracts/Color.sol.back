@@ -1,0 +1,22 @@
+pragma solidity 0.5.16;
+
+import "./ERC721Full.sol";
+
+contract Color is ERC721Full {
+  string[] public colors;
+  mapping(string => bool) _colorExists;
+
+  constructor() ERC721Full("Color", "COLOR") public {
+  }
+
+  // E.G. color = "#FFFFFF"
+  function mint(string memory _color) public {
+    // require a solidity function that creates a guard;
+    // if require evaluates to false exception is returned so we can view the error on the wallet or web interface you're using to execute
+    require(!_colorExists[_color]);
+    uint _id = colors.push(_color);
+    _mint(msg.sender, _id);
+    _colorExists[_color] = true;
+  }
+
+}
