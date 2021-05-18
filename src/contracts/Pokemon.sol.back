@@ -1,0 +1,33 @@
+pragma solidity 0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract Pokemon is ERC721 {
+    
+    struct Attribute {
+        string name;
+        uint256 health;
+        uint256 retreat;
+        string power;
+        string attack;
+        string weakness;
+        string resistance;
+    }
+
+    uint256 public tokenCounter;
+
+    Attribute[] public attributes;
+    // store metadatawithin the nft
+
+    constructor () public ERC721 ("Pokemon","POK") {
+        tokenCounter = 0;
+    }
+
+    function mint(string memory tokenURI, string name, uint256 health, uint256 retreat, string power, string attack, string weakness, string resistance ) public returns (uint256) {
+        uint256 newItemId = tokenCounter;
+        _safeMint(msg.sender, newItemId);
+        attribute = Attributes(name,health, retreat, power, attack, weakness, resistance);
+        tokenCounter++;
+        return newItemId;
+    }
+}

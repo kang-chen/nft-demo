@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import Web3 from 'web3'
 import './App.css';
-import Color from '../abis/Color.json'
+import Pokemon from '../abis/Pokemon.json'
+const {
+  BigNumber
+} = require("@ethersproject/bignumber");
 
 class App extends Component {
 
@@ -30,33 +33,26 @@ class App extends Component {
     this.setState({ account: accounts[0] })
 
     const networkId = await web3.eth.net.getId()
-    const networkData = Color.networks[networkId]
+    console.log(networkId);
+    const networkData = Pokemon.networks[networkId]
     if(networkData) {
-      const abi = Color.abi
+      const abi = Pokemon.abi
       const address = networkData.address
       const contract = new web3.eth.Contract(abi, address)
       this.setState({ contract })
-      const totalSupply = await contract.methods.totalSupply().call()
+      const totalSupply = await contract.methods.tokenCounter().call()
       this.setState({ totalSupply })
       // Load Colors
       for (var i = 1; i <= totalSupply; i++) {
-        const color = await contract.methods.colors(i - 1).call()
+        const aPokemon = await contract.methods.attributes(i - 1).call()
+        const { tokenURI, name, health, retreat } = aPokemon;
         this.setState({
-          colors: [...this.state.colors, color]
+          pokemon: [...this.state.pokemon, { tokenURI, name, health:  BigNumber.from(health).toString(), retreat: BigNumber.from(retreat).toString()}]
         })
       }
     } else {
       window.alert('Smart contract not deployed to detected network.')
     }
-  }
-
-  mint = (color) => {
-    this.state.contract.methods.mint(color).send({ from: this.state.account })
-    .once('receipt', (receipt) => {
-      this.setState({
-        colors: [...this.state.colors, color]
-      })
-    })
   }
 
   constructor(props) {
@@ -65,7 +61,7 @@ class App extends Component {
       account: '',
       contract: null,
       totalSupply: 0,
-      colors: []
+      pokemon: []
     }
   }
 
@@ -75,11 +71,9 @@ class App extends Component {
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
           <a
             className="navbar-brand col-sm-3 col-md-2 mr-0"
-            href="http://www.dappuniversity.com/bootcamp"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#"
           >
-            Color Tokens
+            Pokemon Tokens
           </a>
           <ul className="navbar-nav px-3">
             <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
@@ -88,37 +82,14 @@ class App extends Component {
           </ul>
         </nav>
         <div className="container-fluid mt-5">
-          <div className="row">
-            <main role="main" className="col-lg-12 d-flex text-center">
-              <div className="content mr-auto ml-auto">
-                <h1>Issue Token</h1>
-                <form onSubmit={(event) => {
-                  event.preventDefault()
-                  const color = this.color.value
-                  this.mint(color)
-                }}>
-                  <input
-                    type='text'
-                    className='form-control mb-1'
-                    placeholder='e.g. #FFFFFF'
-                    ref={(input) => { this.color = input }}
-                  />
-                  <input
-                    type='submit'
-                    className='btn btn-block btn-primary'
-                    value='MINT'
-                  />
-                </form>
-              </div>
-            </main>
-          </div>
-          <hr/>
           <div className="row text-center">
-            { this.state.colors.map((color, key) => {
+            {this.state.pokemon.map((aPokemon, key) => {
               return(
                 <div key={key} className="col-md-3 mb-3">
-                  <div className="token" style={{ backgroundColor: color }}></div>
-                  <div>{color}</div>
+                  <img src={aPokemon.tokenURI}/>
+                  <div>Name: {aPokemon.name}</div>
+                  <div>HP: {aPokemon.health}</div>
+                  <div>Retreat cost: {aPokemon.retreat}</div>
                 </div>
               )
             })}

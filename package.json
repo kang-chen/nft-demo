@@ -1,9 +1,10 @@
 {
-  "name": "eth-marketplace",
+  "name": "nft-demo",
   "version": "0.1.0",
-  "description": "An Ethereum Marketplace",
-  "author": "gregory@dappuniversity.com",
+  "description": "An NFT Demo",
+  "author": "kang.chen@zip.co",
   "dependencies": {
+    "@ethersproject/bignumber": "^5.1.1",
     "@openzeppelin/contracts": "^4.1.0",
     "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.7.0",
