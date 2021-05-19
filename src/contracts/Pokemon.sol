@@ -22,6 +22,7 @@ contract Pokemon is ERC721 {
 
     function mint(string memory _tokenURI, string memory _name, uint256 _health, uint256 _retreat) public returns (uint256) {
         uint256 newItemId = tokenCounter;
+        //comment
         _safeMint(msg.sender, newItemId);
         Attribute memory attribute = Attribute(_tokenURI, _name, _health, _retreat);
         attributes.push(attribute);

@@ -6,3 +6,8 @@
   border-radius: 50%;
   display: inline-block;
 }
+
+.token-row {
+  margin: 20px 0 30px 0;
+  text-align: center;
+}

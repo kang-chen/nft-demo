@@ -33,8 +33,9 @@ class App extends Component {
     this.setState({ account: accounts[0] })
 
     const networkId = await web3.eth.net.getId()
-    console.log(networkId);
+    console.log('networkId', networkId);
     const networkData = Pokemon.networks[networkId]
+    console.log('networkData', networkData);
     if(networkData) {
       const abi = Pokemon.abi
       const address = networkData.address
@@ -42,7 +43,7 @@ class App extends Component {
       this.setState({ contract })
       const totalSupply = await contract.methods.tokenCounter().call()
       this.setState({ totalSupply })
-      // Load Colors
+      
       for (var i = 1; i <= totalSupply; i++) {
         const aPokemon = await contract.methods.attributes(i - 1).call()
         const { tokenURI, name, health, retreat } = aPokemon;
@@ -82,18 +83,19 @@ class App extends Component {
           </ul>
         </nav>
         <div className="container-fluid mt-5">
-          <div className="row text-center">
             {this.state.pokemon.map((aPokemon, key) => {
               return(
-                <div key={key} className="col-md-3 mb-3">
-                  <img src={aPokemon.tokenURI}/>
-                  <div>Name: {aPokemon.name}</div>
-                  <div>HP: {aPokemon.health}</div>
-                  <div>Retreat cost: {aPokemon.retreat}</div>
+                <div  key={key} className="token-row">
+                  <div>
+                    <img src={aPokemon.tokenURI}/>
+                    <div>Name: {aPokemon.name}</div>
+                    <div>HP: {aPokemon.health}</div>
+                    <div>Retreat cost: {aPokemon.retreat}</div>
+                  </div>
                 </div>
               )
             })}
-          </div>
+          
         </div>
       </div>
     );
